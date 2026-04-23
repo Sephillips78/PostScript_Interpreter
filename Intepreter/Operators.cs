@@ -34,7 +34,7 @@ namespace Interpreter
 
         public void Pop()
         {
-            _stack.Pop();
+            Console.WriteLine(_stack.Pop());
         }
 
         public void Copy()

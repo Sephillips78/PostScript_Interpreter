@@ -18,10 +18,23 @@ namespace Interpreter
                 if (input == "exit")
                     break;
 
+                if (input == "static")
+                {
+                    interpreter = new PSInterpreter(PSInterpreter.ScopeMode.Static);
+                    Console.WriteLine("Switched to STATIC scope (state reset)");
+                    continue;
+                }
+
+                if (input == "dynamic")
+                {
+                    interpreter = new PSInterpreter(PSInterpreter.ScopeMode.Dynamic);
+                    Console.WriteLine("Switched to DYNAMIC scope (state reset)");
+                    continue;
+                }
+
                 try
                 {
                     interpreter.Execute(input);
-                    Console.WriteLine("Top of stack: " + interpreter.Pop());
                 }
                 catch (Exception ex)
                 {

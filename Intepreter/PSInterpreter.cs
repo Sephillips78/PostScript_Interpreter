@@ -13,7 +13,7 @@ namespace Interpreter
             Static
         }
 
-        private readonly ScopeMode _scopeMode;
+        private ScopeMode _scopeMode;
         private readonly PSStack _stack = new();
         private readonly Tokenizer _tokenizer = new();
         private readonly Dictionary<string, Action> _operators;
@@ -76,6 +76,12 @@ namespace Interpreter
                 { "end", ops.End },
                 { "currentdict", ops.CurrentDict },
             };
+        }
+
+        public void SetScopeMode(ScopeMode mode)
+        {
+            _scopeMode = mode;
+            Console.WriteLine($"Scope mode set to: {_scopeMode}");
         }
 
         public void Execute(string input)
@@ -203,14 +209,13 @@ namespace Interpreter
 
         public void Define(string name, object value)
         {
+
             if (_scopeMode == ScopeMode.Static && value is Procedure proc)
             {
                 _globalDict[name] = proc;   // survive end
-                Console.WriteLine("Boom");
                 return;
             }
 
-            Console.WriteLine("Still");
             CurrentDict[name] = value;
         }
 
