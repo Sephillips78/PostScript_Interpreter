@@ -62,5 +62,44 @@ namespace Interpreter_Tests
 
             Assert.That(stack.Pop(), Is.EqualTo(7.0));
         }
+
+        [Test]
+        public void Exch_Works()
+        {
+            var i = new PSInterpreter();
+            i.Execute("1 2 exch");
+
+            Assert.That(i.Pop(), Is.EqualTo(1.0));
+            Assert.That(i.Pop(), Is.EqualTo(2.0));
+        }
+
+        [Test]
+        public void Copy_Works()
+        {
+            var i = new PSInterpreter();
+            i.Execute("1 2 3 3 copy");
+
+            Assert.That(i.Pop(), Is.EqualTo(3.0));
+            Assert.That(i.Pop(), Is.EqualTo(2.0));
+            Assert.That(i.Pop(), Is.EqualTo(1.0));
+        }
+
+        [Test]
+        public void Count_Works()
+        {
+            var i = new PSInterpreter();
+            i.Execute("1 2 3 count");
+
+            Assert.That(i.Pop(), Is.EqualTo(3.0));
+        }
+
+        [Test]
+        public void Clear_Works()
+        {
+            var i = new PSInterpreter();
+            i.Execute("1 2 3 clear");
+
+            Assert.Throws<InvalidOperationException>(() => i.Pop());
+        }
     }
 }

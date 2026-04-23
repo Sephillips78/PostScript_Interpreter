@@ -24,6 +24,33 @@ namespace Interpreter
                 }
 
                 // -------------------------
+                // MULTI-CHAR OPERATORS (=, ==)
+                // -------------------------
+                if (c == '=')
+                {
+                    if (i + 1 < input.Length && input[i + 1] == '=')
+                    {
+                        tokens.Add(new Token
+                        {
+                            Type = Token.TokenType.Operator,
+                            Value = "=="
+                        });
+                        i += 2;
+                        continue;
+                    }
+                    else
+                    {
+                        tokens.Add(new Token
+                        {
+                            Type = Token.TokenType.Operator,
+                            Value = "="
+                        });
+                        i++;
+                        continue;
+                    }
+                }
+
+                // -------------------------
                 // STRING LITERALS: (hello)
                 // -------------------------
                 if (c == '(')
@@ -77,7 +104,6 @@ namespace Interpreter
 
                             if (depth == 0)
                             {
-                                // flush buffer before closing
                                 if (!string.IsNullOrWhiteSpace(buffer))
                                 {
                                     procTokens.AddRange(Tokenize(buffer));
@@ -121,7 +147,8 @@ namespace Interpreter
                            input[i] != '(' &&
                            input[i] != ')' &&
                            input[i] != '{' &&
-                           input[i] != '}')
+                           input[i] != '}' &&
+                           input[i] != '=') // <-- IMPORTANT: stop at '='
                     {
                         value += input[i];
                         i++;
@@ -142,7 +169,6 @@ namespace Interpreter
         // -------------------------
         private Token ClassifyToken(string value)
         {
-            // boolean
             if (value == "true")
             {
                 return new Token { Type = Token.TokenType.Boolean, Value = true };
@@ -153,13 +179,11 @@ namespace Interpreter
                 return new Token { Type = Token.TokenType.Boolean, Value = false };
             }
 
-            // number
             if (double.TryParse(value, out var num))
             {
                 return new Token { Type = Token.TokenType.Number, Value = num };
             }
 
-            // name (/x)
             if (value.StartsWith("/"))
             {
                 return new Token
@@ -169,7 +193,6 @@ namespace Interpreter
                 };
             }
 
-            // operator / variable reference
             return new Token
             {
                 Type = Token.TokenType.Operator,
