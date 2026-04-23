@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Interpreter
 {
@@ -13,9 +15,12 @@ namespace Interpreter
             _interpreter = interpreter;
         }
 
+        // =========================
+        // Stack manipulation
+        // =========================
+
         public void Dup()
         {
-
             if (_stack.Count < 1)
                 throw new Exception("Stack underflow in dup");
 
@@ -79,9 +84,9 @@ namespace Interpreter
             _stack.Push((double)_stack.Count);
         }
 
-        // -------------------------
+        // =========================
         // Arithmetic Operators
-        // -------------------------
+        // =========================
 
         public void Mul()
         {
@@ -182,9 +187,9 @@ namespace Interpreter
             _stack.Push(a - b);
         }
 
-        // -------------------------
-        // Comparison Operators
-        // -------------------------
+        // =========================
+        // Comparison & Boolean (Bitwise-like) Operators
+        // =========================
 
         public void Eq()
         {
@@ -234,10 +239,6 @@ namespace Interpreter
             _stack.Push(a <= b);
         }
 
-        // -------------------------
-        // Boolean Operators
-        // -------------------------
-
         public void And()
         {
             var b = Convert.ToBoolean(_stack.Pop());
@@ -260,6 +261,10 @@ namespace Interpreter
 
             _stack.Push(!a);
         }
+
+        // =========================
+        // Flow Control
+        // =========================
 
         public void If()
         {
@@ -335,9 +340,9 @@ namespace Interpreter
             throw new Exception("for expects a procedure");
         }
 
-        // -------------------------
-        // Output Operators
-        // -------------------------
+        // =========================
+        // Input/Output Helpers
+        // =========================
 
         public void PrintSimple() // "="
         {
@@ -370,9 +375,9 @@ namespace Interpreter
             return value?.ToString() ?? "null";
         }
 
-        // -------------------------
+        // =========================
         // String Operators
-        // -------------------------
+        // =========================
 
         // (hello) length → 5
         public void Length()
@@ -394,7 +399,6 @@ namespace Interpreter
             throw new Exception("length expects string or dictionary");
         }
 
-
         // (hello) 1 get → 101  (ASCII of 'e')
         public void Get()
         {
@@ -407,7 +411,6 @@ namespace Interpreter
 
             _stack.Push((double)(int)str[index]); // ASCII value
         }
-
 
         // (hello) 1 3 getinterval → "ell"
         public void GetInterval()
@@ -422,7 +425,6 @@ namespace Interpreter
 
             _stack.Push(str.Substring(index, count));
         }
-
 
         // (hello) 1 (yy) putinterval → "hyylo"
         public void PutInterval()
@@ -445,9 +447,9 @@ namespace Interpreter
             _stack.Push(result);
         }
 
-        // -------------------------
+        // =========================
         // Dictionary Operators
-        // -------------------------
+        // =========================
 
         // n dict → creates empty dictionary
         public void Dict()
@@ -458,7 +460,6 @@ namespace Interpreter
             _stack.Push(dict);
         }
 
-
         // dict length → number of entries
         public void DictLength()
         {
@@ -467,7 +468,6 @@ namespace Interpreter
 
             _stack.Push((double)dict.Count);
         }
-
 
         // dict maxlength → capacity (approximate)
         public void MaxLength()
@@ -478,7 +478,6 @@ namespace Interpreter
             _stack.Push((double)dict.Count); // C# doesn't expose capacity cleanly
         }
 
-
         // dict begin → push onto dict stack
         public void Begin()
         {
@@ -487,7 +486,6 @@ namespace Interpreter
 
             _interpreter.PushDict(dict);
         }
-
 
         // end → pop dictionary scope
         public void End()
